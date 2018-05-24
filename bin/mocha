@@ -16,8 +16,11 @@ const args = [path.join(__dirname, '_mocha')];
 // Must be loaded here to handle node-specific options
 getOptions();
 
+// Holds environment variables for child process
+var env = {};
 process.argv.slice(2).forEach(arg => {
-  const flag = arg.split('=')[0];
+  const argArr = arg.split('=');
+  const flag = argArr[0];
 
   switch (flag) {
     case '-d':
@@ -51,6 +54,11 @@ process.argv.slice(2).forEach(arg => {
     case '--napi-modules':
       args.unshift(arg);
       break;
+    case '--env':
+      try {
+        env = JSON.parse(argArr[1]);
+      } catch (e) {}
+      break;
     default:
       if (arg.indexOf('--harmony') === 0) {
         args.unshift(arg);
@@ -68,9 +76,9 @@ process.argv.slice(2).forEach(arg => {
       break;
   }
 });
-
 const proc = spawn(process.execPath, args, {
-  stdio: 'inherit'
+  stdio: 'inherit',
+  env: env
 });
 proc.on('exit', (code, signal) => {
   process.on('exit', () => {
