@@ -55,9 +55,12 @@ process.argv.slice(2).forEach(arg => {
       args.unshift(arg);
       break;
     case '--env':
+      console.log(`MOCHA ARGS - ${argArr[1]}`);
       try {
         env = JSON.parse(argArr[1]);
-      } catch (e) {}
+      } catch (e) {
+        console.log(`MOCHA ARGS - Failed to load JSON - ${e.message}`)
+      }
       break;
     default:
       if (arg.indexOf('--harmony') === 0) {
